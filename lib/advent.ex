@@ -5,10 +5,10 @@ defmodule Advent do
     rotations = execute_rotations()
 
     part1 = rotations
-    |> Enum.count(fn rot -> elem(rot, 0) == 0 end)
+    |> Enum.count(fn rot -> rot[:end_position] == 0 end)
 
     part2 = rotations
-    |> Enum.reduce(0, fn rot, total -> total + elem(rot, 1) end)
+    |> Enum.reduce(0, fn rot, total -> total + rot[:zero_count] end)
 
     IO.puts("part_1: #{part1}")
     IO.puts("part_2: #{part2}")
@@ -17,12 +17,12 @@ defmodule Advent do
   def execute_rotations() do
     File.stream!("data/day1.dat")
     |> parse_instructions()
-    |> Stream.scan({ 50, 0 }, &next_position/2)
+    |> Stream.scan(%{ :end_position => 50, :zero_count => 0 }, &next_position/2)
   end
 
-  def next_position({direction, distance}, { start_position, _zeros }) do
+  def next_position({direction, distance}, previous) do
     sequence = 1..distance
-    |> Stream.scan(start_position, fn _tick, position ->
+    |> Stream.scan(previous[:end_position], fn _tick, position ->
       position = case direction do
         :left -> position - 1
         :right -> position + 1
@@ -35,7 +35,10 @@ defmodule Advent do
       end
     end)
 
-    { Enum.at(sequence, -1), Enum.count(sequence, fn pos -> pos == 0 end) }
+    %{
+      :end_position => Enum.at(sequence, -1),
+      :zero_count => Enum.count(sequence, fn pos -> pos == 0 end)
+    }
   end
 
   def parse_instructions(stream) do
