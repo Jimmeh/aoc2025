@@ -1,8 +1,3 @@
-defmodule Rotation do
-  defstruct [:direction, :distance, :end_position]
-
-end
-
 defmodule Advent do
   def day1 do
     File.stream!("data/day1.dat")
