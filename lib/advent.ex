@@ -1,33 +1,21 @@
+defmodule Rotation do
+  defstruct [:direction, :distance, :end_position]
+
+end
+
 defmodule Advent do
   def day1 do
-    case File.read("data/day1.dat") do
-      {:ok, body} -> process_rotation_file(body)
-      {:error, reason} -> reason
-    end
+    File.stream!("data/day1.dat")
+    |> Stream.map(&String.trim/1)
+    |> Stream.scan(50, &next_position/2)
+    |> Enum.count(&(&1 == 0))
   end
 
-  def process_rotation_file(body) do
-    all_rotations = String.split(body)
-    dial_position = 50
-    zero_count = 0
-    rotate(all_rotations, dial_position, zero_count)
-  end
-
-  def rotate([next_rotation | remaining_rotations], dial_position, zero_count) do
-    { direction, distance } = parse_rotation(next_rotation)
-    dial_position = next_position(dial_position, direction, distance)
-    zero_count = if dial_position == 0 do zero_count + 1 else zero_count end
-    rotate(remaining_rotations, dial_position, zero_count)
-  end
-
-  def rotate([], _dial_position, zero_count) do
-    zero_count
-  end
-
-  def next_position(from, direction, distance) do
-     dial_position = case direction do
-      "L" -> from - distance
-      "R" -> from + distance
+  def next_position(rotation, current_position) do
+    { direction, distance } = parse_rotation(rotation)
+    dial_position = case direction do
+      "L" -> current_position - distance
+      "R" -> current_position + distance
     end
 
     dial_position = cond do
@@ -39,8 +27,8 @@ defmodule Advent do
     dial_position
   end
 
-  def parse_rotation(input) do
-    { direction, distance } = String.split_at(input, 1)
+  def parse_rotation(rotation) do
+    { direction, distance } = String.split_at(rotation, 1)
     distance = get_distance(String.to_integer(distance))
     { direction, distance }
   end
