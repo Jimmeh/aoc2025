@@ -1,39 +1,50 @@
+
+
 defmodule Advent do
   def day1 do
+    rotations = execute_rotations()
+
+    part1 = rotations
+    |> Enum.count(fn rot -> elem(rot, 0) == 0 end)
+
+    part2 = rotations
+    |> Enum.reduce(0, fn rot, total -> total + elem(rot, 1) end)
+
+    IO.puts("part_1: #{part1}")
+    IO.puts("part_2: #{part2}")
+  end
+
+  def execute_rotations() do
     File.stream!("data/day1.dat")
-    |> Stream.map(&String.trim/1)
-    |> Stream.scan(50, &next_position/2)
-    |> Enum.count(&(&1 == 0))
+    |> parse_instructions()
+    |> Stream.scan({ 50, 0 }, &next_position/2)
   end
 
-  def next_position(rotation, current_position) do
-    { direction, distance } = parse_rotation(rotation)
-    dial_position = case direction do
-      "L" -> current_position - distance
-      "R" -> current_position + distance
-    end
+  def next_position({direction, distance}, { start_position, _zeros }) do
+    sequence = 1..distance
+    |> Stream.scan(start_position, fn _tick, position ->
+      position = case direction do
+        :left -> position - 1
+        :right -> position + 1
+      end
 
-    dial_position = cond do
-      dial_position < 0 -> 100 + dial_position
-      dial_position > 99 -> dial_position - 100
-      true -> dial_position
-    end
+      cond do
+        position == -1 -> 99
+        position == 100 -> 0
+        true -> position
+      end
+    end)
 
-    dial_position
+    { Enum.at(sequence, -1), Enum.count(sequence, fn pos -> pos == 0 end) }
   end
 
-  def parse_rotation(rotation) do
-    { direction, distance } = String.split_at(rotation, 1)
-    distance = get_distance(String.to_integer(distance))
-    { direction, distance }
+  def parse_instructions(stream) do
+    stream
+    |> Stream.map(fn input ->
+      case String.trim(input) do
+        "L" <> distance -> { :left, String.to_integer(distance) }
+        "R" <> distance -> { :right, String.to_integer(distance) }
+      end
+    end)
   end
-
-  def get_distance(distance) do
-    if distance > 100 do
-      get_distance(distance - 100)
-    else
-      distance
-    end
-  end
-
 end
