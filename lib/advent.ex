@@ -5,4 +5,8 @@ defmodule Advent do
     IO.puts("part two: #{passwords.part_two}")
   end
 
+  def day2 do
+    invalid_count = ProductIds.sum_invalid_ids("data/day2.dat")
+    IO.puts("part one: #{invalid_count}")
+  end
 end
