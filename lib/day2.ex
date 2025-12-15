@@ -20,10 +20,10 @@ defmodule ProductIds do
 
   def send_for_processing(range) do
     parent = self()
-    spawn(fn -> check(range, parent) end)
+    spawn(fn -> check_range(range, parent) end)
   end
 
-  def check(range, recipient) do
+  def check_range(range, recipient) do
     to_range(range)
     |> Enum.each(fn id ->
       case check_id(Integer.to_string(id)) do
