@@ -1,18 +1,37 @@
 defmodule ProductIds do
   def sum_invalid_ids(filename) do
-    String.split(File.read!(filename), ",")
-    |> Stream.map(&invalid_sum/1)
-    |> Enum.sum()
+    receive_results(0,
+      String.split(File.read!(filename), ",")
+      |> Stream.map(&send_for_processing/1)
+      |> Enum.count()
+    )
   end
 
-  def invalid_sum(range) do
+  def receive_results(total, 0) do
+    total
+  end
+
+  def receive_results(sum, remaining) do
+    receive do
+      { :invalid, number } -> receive_results(sum + number, remaining)
+      { :complete } -> receive_results(sum, remaining - 1)
+    end
+  end
+
+  def send_for_processing(range) do
+    parent = self()
+    spawn(fn -> check(range, parent) end)
+  end
+
+  def check(range, recipient) do
     to_range(range)
-    |> Enum.reduce(0, fn id, invalid_sum ->
+    |> Enum.each(fn id ->
       case check_id(Integer.to_string(id)) do
-        :valid -> invalid_sum
-        :invalid -> invalid_sum + id
+        :invalid -> send(recipient, { :invalid, id })
+        :valid -> :ok
       end
     end)
+    send(recipient, { :complete })
   end
 
   def check_id(id) do
