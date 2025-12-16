@@ -6,7 +6,9 @@ defmodule Advent do
   end
 
   def day2 do
-    invalid_count = ProductIds.sum_invalid_ids("data/day2.dat")
-    IO.puts("part one: #{invalid_count}")
+    part_one = ProductIds.sum_invalid_ids("data/day2.dat", :part_one)
+    IO.puts("part one: #{part_one}")
+    part_two = ProductIds.sum_invalid_ids("data/day2.dat", :part_two)
+    IO.puts("part two: #{part_two}")
   end
 end

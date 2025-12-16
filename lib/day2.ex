@@ -1,8 +1,9 @@
 defmodule ProductIds do
-  def sum_invalid_ids(filename) do
+  def sum_invalid_ids(filename, part \\ :part_one) do
+
     receive_results(0,
       String.split(File.read!(filename), ",")
-      |> Stream.map(&send_for_processing/1)
+      |> Stream.map(&send_for_processing(&1, part))
       |> Enum.count()
     )
   end
@@ -18,9 +19,12 @@ defmodule ProductIds do
     end
   end
 
-  def send_for_processing(range) do
+  def send_for_processing(range, part) do
     parent = self()
-    spawn(fn -> check_range(range, parent) end)
+    spawn(fn ->
+      Process.put(:part, part)
+      check_range(range, parent)
+    end)
   end
 
   def check_range(range, recipient) do
@@ -35,9 +39,20 @@ defmodule ProductIds do
   end
 
   def check_id(id) do
+    part = Process.get(:part)
     cond do
       String.length(id) <= 1 -> :valid
-      true -> check_for_repetitions(id)
+      part == :part_one -> check_for_single_repetition(id)
+      part == :part_two -> check_for_repetitions(id)
+    end
+  end
+
+  def check_for_single_repetition(id) do
+    middle = div(String.length(id), 2)
+    { left, right } = String.split_at(id, middle)
+    case left == right do
+      :true -> :invalid
+      :false -> :valid
     end
   end
 
