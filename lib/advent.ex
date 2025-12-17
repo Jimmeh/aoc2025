@@ -18,4 +18,11 @@ defmodule Advent do
     part_two = BatteryBank.total_joltage("data/day3.dat", 12)
     IO.puts("part one: #{part_two}")
   end
+
+  def day4 do
+    part_one = PaperRolls.accessible_rolls("data/day4.dat", false)
+    IO.puts("part one: #{part_one}")
+    part_two = PaperRolls.accessible_rolls("data/day4.dat", true)
+    IO.puts("part one: #{part_two}")
+  end
 end
