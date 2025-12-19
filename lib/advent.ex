@@ -31,4 +31,9 @@ defmodule Advent do
     IO.puts("part one: #{part_one}")
     IO.puts("part two: #{part_two}")
   end
+
+  def day6 do
+    part_one = VerticalCalculator.sum_of_calculations("data/day6.dat")
+    IO.puts("part one: #{part_one}")
+  end
 end
