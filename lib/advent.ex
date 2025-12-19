@@ -25,4 +25,10 @@ defmodule Advent do
     part_two = PaperRolls.accessible_rolls("data/day4.dat", true)
     IO.puts("part one: #{part_two}")
   end
+
+  def day5 do
+    { part_two, part_one } = Ingredients.count_fresh("data/day5.dat")
+    IO.puts("part one: #{part_one}")
+    IO.puts("part two: #{part_two}")
+  end
 end
