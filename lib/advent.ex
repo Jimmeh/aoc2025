@@ -33,7 +33,9 @@ defmodule Advent do
   end
 
   def day6 do
-    part_one = VerticalCalculator.sum_of_calculations("data/day6.dat")
+    part_one = VerticalCalculator.sum_of_calculations("data/day6.dat", :normal)
     IO.puts("part one: #{part_one}")
+    part_two = VerticalCalculator.sum_of_calculations("data/day6.dat", :cephalopod)
+    IO.puts("part two: #{part_two}")
   end
 end
