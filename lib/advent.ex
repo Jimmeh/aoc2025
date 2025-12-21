@@ -40,7 +40,8 @@ defmodule Advent do
   end
 
   def day7 do
-    part_one = LaserBeams.count_beam_splits("data/day7.dat")
+    { part_one, part_two } = LaserBeams.count_beam_splits("data/day7.dat")
     IO.puts("part one: #{part_one}")
+    IO.puts("part two: #{part_two}")
   end
 end
