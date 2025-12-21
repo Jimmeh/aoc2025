@@ -38,4 +38,9 @@ defmodule Advent do
     part_two = VerticalCalculator.sum_of_calculations("data/day6.dat", :cephalopod)
     IO.puts("part two: #{part_two}")
   end
+
+  def day7 do
+    part_one = LaserBeams.count_beam_splits("data/day7.dat")
+    IO.puts("part one: #{part_one}")
+  end
 end
