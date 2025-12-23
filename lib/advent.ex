@@ -44,4 +44,10 @@ defmodule Advent do
     IO.puts("part one: #{part_one}")
     IO.puts("part two: #{part_two}")
   end
+
+  def day8 do
+    { part_one, part_two } = JunctionBoxes.largest_circuits_product("data/day8.dat")
+    IO.puts("part one: #{part_one}")
+    IO.puts("part two: #{part_two}")
+  end
 end
